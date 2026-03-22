@@ -1,0 +1,36 @@
+:root{
+    --black:#070705;
+    --yellow:#ffef92;
+    --brown: #5d3001;
+
+}
+
+body{
+    margin: 0em;
+    padding: 0em;
+    background-color: var(--black,black);
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    
+}
+
+.gato{
+    display: grid;
+    grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+    gap:2px;
+}
+
+.element{
+    background-color: var(--yellow);
+    width: 3rem;
+    height: 3rem;
+}
+
+.element:hover{
+    background-color: white;
+}

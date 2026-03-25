@@ -123,6 +123,14 @@ button:hover {
     gap:2px;
 }
 
+.element.win{
+  background-color: red;
+}
+
+.element.win:hover{
+  background-color: red;
+}
+
 .gato.win::after{
     content:"";
     position: absolute;

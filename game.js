@@ -6,6 +6,13 @@
  * @returns gameType
  */
 function createGame(a,b){
+    class token{
+        constructor(palo,x,y){
+            this.x=x;
+            this.y=y;
+            this.palo=palo;
+        }
+    }
     this.a=a;
     this.aPalo="x";
     this.b=b;
@@ -14,6 +21,7 @@ function createGame(a,b){
     let stackRows=[[],[],[]];
     let stackColumns=[[],[],[]];
     let diagonal=[[],[]];
+    let winning=[];
 
     aPt=0;
     bPt=0;
@@ -24,6 +32,7 @@ function createGame(a,b){
         stackRows=[[],[],[]];
         stackColumns=[[],[],[]];
         diagonal=[[],[]];
+        winning=[];
     }
 
     function Play(palo, x, y){
@@ -31,10 +40,11 @@ function createGame(a,b){
         y=Math.max(1,y);
         if(table[y-1][x-1]==="&"){
             table[y-1][x-1]=palo;
-            stackRows[y-1].push(palo);
-            stackColumns[x-1].push(palo);
-            if(y-1===x-1) diagonal[0].push(palo);
-            if(y+x-2=== 3-1 ) diagonal[1].push(palo);
+            const tk=new token(palo,x,y);
+            stackRows[y-1].push(tk);
+            stackColumns[x-1].push(tk);
+            if(y-1===x-1) diagonal[0].push(tk);
+            if(y+x-2=== 3-1 ) diagonal[1].push(tk);
             return true;
         }
 
@@ -60,12 +70,14 @@ function createGame(a,b){
     }
 
     function isOver(){
+        debugger;
         
         let rows=[...stackRows,...stackColumns,...diagonal];
         rows=rows.filter((x)=>x.length===3);
         
         for(const x of rows){
-            if(x[0]===x[1] && x[1]===x[2]){
+            if(x[0].palo===x[1].palo && x[1].palo===x[2].palo){
+                winning.push(...x);
                 //three in line
 
                 if(x[0]===aPalo){
@@ -84,7 +96,11 @@ function createGame(a,b){
         return false;
     }
 
-    return {getResult, DrawTable, Play, isOver, reset, }
+    function getWinningLine(){
+        return winning;
+    }
+
+    return {getResult, DrawTable, Play, isOver, reset, getWinningLine}
 }
 
        
@@ -102,16 +118,29 @@ gato.addEventListener("click", (event)=>{
     try{
         pos=event.target.getAttribute("data-pos");
         pos=pos.split(",");
-        console.log({pos});
     }catch(error){
         return;
     }
     let palo=currentPlayer===0?"✖":"◯";
 
+    debugger;
+
     if(game.Play(palo,pos[0],pos[1])){
         event.target.innerText=palo;
         currentPlayer = (currentPlayer+1)%2;
-        
+        if(game.isOver()){
+            const winningLine= game.getWinningLine();
+            const tiles= document.querySelectorAll(".element");
+            tiles.forEach(x=>{
+                for(const v of winningLine){
+                    const s=[v.x,v.y].join();
+                    if(s===x.getAttribute("data-pos")){
+                        x.classList.add("win");
+                    }
+                }
+            });
+        }
+
     }
 })
 //#endregion
